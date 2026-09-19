@@ -264,6 +264,9 @@ const db = getFirestore(app);
 // ⚠️ Remplacez par l'URL de votre Worker Cloudflare
 const PROXY_URL = "https://crimson-rice-4926.ludivinecaron770.workers.dev/";
 
+// ⚠️ Doit être identique à la date "dateFrom" définie dans le Worker
+const CHALLENGE_START_DATE = "2026-09-01";
+
 let currentPseudo = "";
 let unsubscribeLeaderboard = null;
 let targetPushups = null;
@@ -299,9 +302,15 @@ window.setPseudo = function () {
   document.getElementById("user-pseudo").textContent = pseudo;
 
   show("dashboard-section");
+  document.getElementById("start-date").textContent = formatDateFR(CHALLENGE_START_DATE);
   loadTarget();
   startLeaderboard();
 };
+
+function formatDateFR(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  return `${day}/${month}/${year}`;
+}
 
 window.changePseudo = function () {
   if (unsubscribeLeaderboard) { unsubscribeLeaderboard(); unsubscribeLeaderboard = null; }
