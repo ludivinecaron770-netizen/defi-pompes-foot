@@ -196,8 +196,8 @@
       <p class="lead">Salut <strong id="user-pseudo"></strong> 👋 Choisis une compétition, on compte les buts des 15 derniers matchs et on transforme ça en pompes.</p>
       <label for="league">Compétition</label>
       <select id="league">
-        <option value="4334">Ligue 1</option>
-        <option value="4328">Premier League</option>
+        <option value="FL1">Ligue 1</option>
+        <option value="PL">Premier League</option>
       </select>
       <button onclick="fetchGoals()" id="fetch-btn">Compter les buts</button>
       <p class="error-msg" id="fetch-error"></p>
@@ -230,29 +230,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // ⚠️ Remplacez par votre configuration Firebase (étape 4)
-const firebaseConfig = {
-
-  apiKey: "AIzaSyDQcb_LtIzZaALcluhkx9d_TC-Q6HKhKPM",
-
-  authDomain: "defi-pompes-foot.firebaseapp.com",
-
-  projectId: "defi-pompes-foot",
-
-  storageBucket: "defi-pompes-foot.firebasestorage.app",
-
-  messagingSenderId: "599507156508",
-
-  appId: "1:599507156508:web:ac509707c5a3f58b5129d9",
-
-  measurementId: "G-1Z6ZW7SDYS"
-
-};
-
+const firebaseConfig = VOTRE_CONFIG_FIREBASE_ICI;
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const THESPORTSDB_KEY = "3";
+// ⚠️ Remplacez par l'URL de votre Worker Cloudflare (étape 4)
+const PROXY_URL = "https://crimson-rice-4926.ludivinecaron770.workers.dev/";
 let currentPseudo = "";
 let unsubscribeLeaderboard = null;
 
@@ -302,18 +286,18 @@ window.fetchGoals = async function () {
   btn.textContent = "Chargement...";
 
   try {
-    const url = `https://www.thesportsdb.com/api/v1/json/${THESPORTSDB_KEY}/eventspastleague.php?id=${leagueId}`;
+    const url = `${PROXY_URL}?competition=${leagueId}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Erreur API (${response.status})`);
 
     const data = await response.json();
-    if (!data.events || data.events.length === 0) {
+    if (!data.matches || data.matches.length === 0) {
       throw new Error("Aucun match trouvé pour cette compétition.");
     }
 
     let totalGoals = 0;
-    for (const match of data.events) {
-      totalGoals += (parseInt(match.intHomeScore) || 0) + (parseInt(match.intAwayScore) || 0);
+    for (const match of data.matches) {
+      totalGoals += (match.score.fullTime.home || 0) + (match.score.fullTime.away || 0);
     }
     const pushups = totalGoals * 5;
 
@@ -321,7 +305,7 @@ window.fetchGoals = async function () {
     await setDoc(scoreRef, {
       pseudo: currentPseudo,
       totalPushups: increment(pushups),
-      lastCompetition: leagueId === "4334" ? "Ligue 1" : "Premier League",
+      lastCompetition: leagueId === "FL1" ? "Ligue 1" : "Premier League",
       updatedAt: serverTimestamp()
     }, { merge: true });
 
