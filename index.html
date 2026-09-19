@@ -302,7 +302,9 @@ window.setPseudo = function () {
   document.getElementById("user-pseudo").textContent = pseudo;
 
   show("dashboard-section");
-  document.getElementById("start-date").textContent = formatDateFR(CHALLENGE_START_DATE);
+  //document.getElementById("start-date").textContent = formatDateFR(CHALLENGE_START_DATE);
+  document.getElementById("start-date-1").textContent = formatDateFR(CHALLENGE_START_DATE);
+  document.getElementById("start-date-2").textContent = formatDateFR(CHALLENGE_START_DATE);
   loadTarget();
   startLeaderboard();
 };
