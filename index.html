@@ -230,7 +230,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // ⚠️ Remplacez par votre configuration Firebase (étape 4)
-const firebaseConfig = VOTRE_CONFIG_FIREBASE_ICI;
+const firebaseConfig = {
+
+  apiKey: "AIzaSyDQcb_LtIzZaALcluhkx9d_TC-Q6HKhKPM",
+
+  authDomain: "defi-pompes-foot.firebaseapp.com",
+
+  projectId: "defi-pompes-foot",
+
+  storageBucket: "defi-pompes-foot.firebasestorage.app",
+
+  messagingSenderId: "599507156508",
+
+  appId: "1:599507156508:web:ac509707c5a3f58b5129d9",
+
+  measurementId: "G-1Z6ZW7SDYS"
+
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
